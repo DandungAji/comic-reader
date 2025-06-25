@@ -169,6 +169,69 @@ export const genres = [
 
 export const dailyDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Completed"];
 
+// Analytics Mock Data
+export const mockAnalytics = {
+  userStats: {
+    totalComicsRead: 147,
+    totalEpisodesRead: 2843,
+    totalReadingTime: 89, // hours
+    averageRating: 4.6,
+    favoriteGenre: 'Romance',
+    readingStreak: 12, // days
+    joinDate: '2023-06-15',
+    totalLikes: 1247,
+    totalComments: 89
+  },
+  readingHistory: [
+    { date: '2024-06-19', episodes: 12, minutes: 156 },
+    { date: '2024-06-20', episodes: 8, minutes: 104 },
+    { date: '2024-06-21', episodes: 15, minutes: 195 },
+    { date: '2024-06-22', episodes: 10, minutes: 130 },
+    { date: '2024-06-23', episodes: 7, minutes: 91 },
+    { date: '2024-06-24', episodes: 13, minutes: 169 },
+    { date: '2024-06-25', episodes: 9, minutes: 117 }
+  ],
+  genreBreakdown: [
+    { name: 'Romance', value: 35, color: '#FF6B9D' },
+    { name: 'Action', value: 22, color: '#4ECDC4' },
+    { name: 'Fantasy', value: 18, color: '#45B7D1' },
+    { name: 'Drama', value: 15, color: '#96CEB4' },
+    { name: 'Comedy', value: 10, color: '#FFEAA7' }
+  ],
+  weeklyActivity: [
+    { day: 'Mon', episodes: 8, likes: 15, comments: 3 },
+    { day: 'Tue', episodes: 12, likes: 22, comments: 5 },
+    { day: 'Wed', episodes: 6, likes: 11, comments: 2 },
+    { day: 'Thu', episodes: 15, likes: 28, comments: 7 },
+    { day: 'Fri', episodes: 10, likes: 19, comments: 4 },
+    { day: 'Sat', episodes: 18, likes: 32, comments: 8 },
+    { day: 'Sun', episodes: 14, likes: 25, comments: 6 }
+  ],
+  monthlyProgress: [
+    { month: 'Jan', comics: 12, episodes: 234 },
+    { month: 'Feb', comics: 15, episodes: 289 },
+    { month: 'Mar', comics: 18, episodes: 356 },
+    { month: 'Apr', comics: 20, episodes: 398 },
+    { month: 'May', comics: 22, episodes: 445 },
+    { month: 'Jun', comics: 25, episodes: 512 }
+  ],
+  topComics: [
+    { title: 'Lore Olympus', episodes: 89, hours: 12.3, rating: 5 },
+    { title: 'Tower of God', episodes: 67, hours: 9.8, rating: 5 },
+    { title: 'UnOrdinary', episodes: 54, hours: 7.2, rating: 4 },
+    { title: 'The Remarried Empress', episodes: 43, hours: 6.1, rating: 5 },
+    { title: 'SubZero', episodes: 38, hours: 5.4, rating: 4 }
+  ],
+  achievements: [
+    { id: 1, title: 'First Chapter', description: 'Read your first episode', unlocked: true, date: '2023-06-15' },
+    { id: 2, title: 'Binge Reader', description: 'Read 50 episodes in a week', unlocked: true, date: '2023-07-22' },
+    { id: 3, title: 'Genre Explorer', description: 'Read comics from 5+ genres', unlocked: true, date: '2023-08-10' },
+    { id: 4, title: 'Loyal Fan', description: 'Follow 10+ series', unlocked: true, date: '2023-09-05' },
+    { id: 5, title: 'Community Member', description: 'Leave 50+ comments', unlocked: false, progress: 89 },
+    { id: 6, title: 'Speed Reader', description: 'Read 100 episodes in a day', unlocked: false, progress: 0 }
+  ]
+};
+
 // Header Component
 export const Header = ({ onSearch, searchTerm, setSearchTerm }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
