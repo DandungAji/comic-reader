@@ -258,6 +258,12 @@ function App() {
           onStartReading={handleStartReading}
         />
       )}
+
+      {/* Analytics Dashboard */}
+      <AnalyticsDashboard
+        isOpen={showAnalytics}
+        onClose={() => setShowAnalytics(false)}
+      />
     </div>
   );
 }
