@@ -16,8 +16,36 @@ import {
   TrendingUp,
   Filter,
   Eye,
-  MessageCircle
+  MessageCircle,
+  BarChart3,
+  Clock,
+  Target,
+  Award,
+  Users,
+  BookMarked,
+  Activity,
+  PieChart,
+  LineChart,
+  Download
 } from 'lucide-react';
+import { 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  LineChart as RechartsLineChart,
+  Line,
+  PieChart as RechartsPieChart,
+  Cell,
+  Pie,
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
+import { format, subDays, startOfWeek, endOfWeek } from 'date-fns';
 
 // Mock Data
 export const mockComics = [
