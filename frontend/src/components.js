@@ -1,0 +1,670 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Search, 
+  Heart, 
+  Share2, 
+  Star, 
+  Play, 
+  ChevronLeft, 
+  ChevronRight,
+  Menu,
+  User,
+  Bell,
+  BookOpen,
+  Calendar,
+  TrendingUp,
+  Filter,
+  Eye,
+  MessageCircle
+} from 'lucide-react';
+
+// Mock Data
+export const mockComics = [
+  {
+    id: 1,
+    title: "Jackson's Diary",
+    author: "Paola Barbato",
+    genre: "Romance",
+    rating: 9.8,
+    views: "2.1M",
+    likes: 45000,
+    thumbnail: "https://images.pexels.com/photos/31334946/pexels-photo-31334946.jpeg",
+    description: "A heartwarming story about love, friendship, and growing up.",
+    status: "Ongoing",
+    episodes: 15,
+    isCompleted: false
+  },
+  {
+    id: 2,
+    title: "Our Walk Home",
+    author: "Geum Ga",
+    genre: "Drama",
+    rating: 9.5,
+    views: "1.8M",
+    likes: 38000,
+    thumbnail: "https://images.unsplash.com/photo-1620075267033-09d12ec75b40",
+    description: "A touching tale of two friends walking through life together.",
+    status: "Completed",
+    episodes: 23,
+    isCompleted: true
+  },
+  {
+    id: 3,
+    title: "Super Armor",
+    author: "Lim Dall-young",
+    genre: "Action",
+    rating: 9.7,
+    views: "3.2M",
+    likes: 52000,
+    thumbnail: "https://images.unsplash.com/photo-1619023491350-d04814cf6a35",
+    description: "Epic battles and incredible powers in a futuristic world.",
+    status: "Ongoing",
+    episodes: 45,
+    isCompleted: false
+  },
+  {
+    id: 4,
+    title: "The Sichuan Tang Clan's",
+    author: "STUDIO MASSSTAR",
+    genre: "Fantasy",
+    rating: 9.6,
+    views: "2.8M",
+    likes: 47000,
+    thumbnail: "https://images.unsplash.com/photo-1666705520192-418fb959244e",
+    description: "Ancient martial arts meet modern storytelling.",
+    status: "Ongoing",
+    episodes: 32,
+    isCompleted: false
+  },
+  {
+    id: 5,
+    title: "The Second Chance Convenience Store",
+    author: "Yeon-woo",
+    genre: "Slice of life",
+    rating: 9.4,
+    views: "1.5M",
+    likes: 31000,
+    thumbnail: "https://images.pexels.com/photos/6214570/pexels-photo-6214570.jpeg",
+    description: "Finding hope and new beginnings in everyday moments.",
+    status: "Ongoing",
+    episodes: 18,
+    isCompleted: false
+  },
+  {
+    id: 6,
+    title: "SubZero",
+    author: "Junepurrr",
+    genre: "Romance",
+    rating: 9.9,
+    views: "4.1M",
+    likes: 68000,
+    thumbnail: "https://images.unsplash.com/photo-1705831156575-a5294d295a31",
+    description: "A princess and a dragon prince's forbidden love story.",
+    status: "Completed",
+    episodes: 156,
+    isCompleted: true
+  },
+  {
+    id: 7,
+    title: "Midnight Poppy Land",
+    author: "Lilydusk",
+    genre: "Romance",
+    rating: 9.7,
+    views: "3.5M",
+    likes: 55000,
+    thumbnail: "https://images.unsplash.com/photo-1740297223378-38c5ee91d459",
+    description: "A dangerous world where love knows no boundaries.",
+    status: "Ongoing",
+    episodes: 78,
+    isCompleted: false
+  },
+  {
+    id: 8,
+    title: "The Remarried Empress",
+    author: "Alphatart",
+    genre: "Drama",
+    rating: 9.8,
+    views: "5.2M",
+    likes: 89000,
+    thumbnail: "https://images.unsplash.com/photo-1695671548955-74a180b8777d",
+    description: "Political intrigue and romance in the royal court.",
+    status: "Ongoing",
+    episodes: 124,
+    isCompleted: false
+  }
+];
+
+export const genres = [
+  "All", "Drama", "Fantasy", "Comedy", "Action", "Slice of life", "Romance", "Superhero", "Sci-fi"
+];
+
+export const dailyDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Completed"];
+
+// Header Component
+export const Header = ({ onSearch, searchTerm, setSearchTerm }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <div className="flex items-center">
+                <div className="bg-green-500 text-white px-3 py-1 rounded-lg font-bold text-xl">
+                  WEBTOON
+                </div>
+              </div>
+            </div>
+            
+            {/* Navigation */}
+            <nav className="hidden md:ml-8 md:flex md:space-x-8">
+              <a href="#" className="text-gray-900 hover:text-green-500 px-3 py-2 text-sm font-medium">
+                ORIGINALS
+              </a>
+              <a href="#" className="text-gray-500 hover:text-green-500 px-3 py-2 text-sm font-medium">
+                CATEGORIES
+              </a>
+              <a href="#" className="text-gray-500 hover:text-green-500 px-3 py-2 text-sm font-medium">
+                RANKINGS
+              </a>
+              <a href="#" className="text-gray-500 hover:text-green-500 px-3 py-2 text-sm font-medium">
+                CANVAS
+              </a>
+            </nav>
+          </div>
+
+          {/* Search and Actions */}
+          <div className="flex items-center space-x-4">
+            <div className="relative hidden sm:block">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Search comics..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && onSearch()}
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent w-64"
+              />
+            </div>
+            
+            <button className="text-gray-500 hover:text-green-500 p-2">
+              <Bell className="w-5 h-5" />
+            </button>
+            
+            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+              Log in
+            </button>
+            
+            <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-t">
+          <nav className="px-4 py-2 space-y-1">
+            <a href="#" className="block px-3 py-2 text-gray-900 hover:text-green-500">ORIGINALS</a>
+            <a href="#" className="block px-3 py-2 text-gray-500 hover:text-green-500">CATEGORIES</a>
+            <a href="#" className="block px-3 py-2 text-gray-500 hover:text-green-500">RANKINGS</a>
+            <a href="#" className="block px-3 py-2 text-gray-500 hover:text-green-500">CANVAS</a>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};
+
+// Comic Card Component
+export const ComicCard = ({ comic, onClick, size = "normal" }) => {
+  const [isLiked, setIsLiked] = useState(false);
+
+  const cardClass = size === "small" ? "w-32" : "w-40";
+  const imageClass = size === "small" ? "h-40" : "h-52";
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className={`${cardClass} flex-shrink-0 cursor-pointer group`}
+      onClick={() => onClick(comic)}
+    >
+      <div className="relative overflow-hidden rounded-lg shadow-md group-hover:shadow-lg transition-shadow">
+        <img
+          src={comic.thumbnail}
+          alt={comic.title}
+          className={`w-full ${imageClass} object-cover`}
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+        
+        {/* Hover Actions */}
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsLiked(!isLiked);
+            }}
+            className={`p-1.5 rounded-full ${isLiked ? 'bg-red-500 text-white' : 'bg-white text-gray-600'} shadow-md hover:scale-110 transition-transform`}
+          >
+            <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+          </button>
+        </div>
+
+        {/* Status Badge */}
+        {comic.isCompleted && (
+          <div className="absolute top-2 left-2">
+            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+              COMPLETED
+            </span>
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-2">
+        <h3 className="font-semibold text-gray-900 text-sm line-clamp-1 group-hover:text-green-500 transition-colors">
+          {comic.title}
+        </h3>
+        <p className="text-gray-500 text-xs mt-1">{comic.author}</p>
+        <div className="flex items-center mt-1 space-x-2">
+          <div className="flex items-center">
+            <Star className="w-3 h-3 text-yellow-400 fill-current" />
+            <span className="text-xs text-gray-600 ml-1">{comic.rating}</span>
+          </div>
+          <div className="flex items-center">
+            <Eye className="w-3 h-3 text-gray-400" />
+            <span className="text-xs text-gray-600 ml-1">{comic.views}</span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// Section Component
+export const Section = ({ title, children, viewAllAction }) => {
+  return (
+    <section className="mb-12">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+        {viewAllAction && (
+          <button
+            onClick={viewAllAction}
+            className="text-green-500 hover:text-green-600 text-sm font-medium"
+          >
+            View all →
+          </button>
+        )}
+      </div>
+      {children}
+    </section>
+  );
+};
+
+// Horizontal Scroll Container
+export const HorizontalScroll = ({ children }) => {
+  return (
+    <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+      {children}
+    </div>
+  );
+};
+
+// Genre Filter
+export const GenreFilter = ({ genres, activeGenre, onGenreChange }) => {
+  return (
+    <div className="flex space-x-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+      {genres.map((genre) => (
+        <button
+          key={genre}
+          onClick={() => onGenreChange(genre)}
+          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+            activeGenre === genre
+              ? 'bg-gray-900 text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          {genre}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// Daily Filter
+export const DailyFilter = ({ days, activeDay, onDayChange }) => {
+  return (
+    <div className="flex space-x-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+      {days.map((day) => (
+        <button
+          key={day}
+          onClick={() => onDayChange(day)}
+          className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+            activeDay === day
+              ? 'bg-gray-900 text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          {day}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+// Comic Detail Modal
+export const ComicDetailModal = ({ comic, onClose, onStartReading }) => {
+  const [activeTab, setActiveTab] = useState('episodes');
+
+  if (!comic) return null;
+
+  const mockEpisodes = Array.from({ length: comic.episodes }, (_, i) => ({
+    id: i + 1,
+    title: `Episode ${i + 1}`,
+    thumbnail: comic.thumbnail,
+    date: new Date(2024, 5, 25 - i).toLocaleDateString(),
+    likes: Math.floor(Math.random() * 1000) + 100,
+    comments: Math.floor(Math.random() * 500) + 50,
+    isNew: i < 3
+  }));
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="relative">
+            <div 
+              className="h-64 bg-cover bg-center"
+              style={{ 
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${comic.thumbnail})` 
+              }}
+            >
+              <div className="absolute inset-0 flex items-end p-6">
+                <div className="text-white">
+                  <h1 className="text-4xl font-bold mb-2">{comic.title}</h1>
+                  <p className="text-lg opacity-90">{comic.author}</p>
+                  <div className="flex items-center mt-4 space-x-6">
+                    <div className="flex items-center">
+                      <Star className="w-5 h-5 text-yellow-400 fill-current mr-1" />
+                      <span>{comic.rating}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Eye className="w-5 h-5 mr-1" />
+                      <span>{comic.views}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Heart className="w-5 h-5 mr-1" />
+                      <span>{comic.likes.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setActiveTab('episodes')}
+                  className={`px-4 py-2 rounded-lg font-medium ${
+                    activeTab === 'episodes' ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  Episodes
+                </button>
+                <button
+                  onClick={() => setActiveTab('about')}
+                  className={`px-4 py-2 rounded-lg font-medium ${
+                    activeTab === 'about' ? 'bg-green-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  About
+                </button>
+              </div>
+              
+              <button
+                onClick={() => onStartReading(comic)}
+                className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
+              >
+                Start Reading
+              </button>
+            </div>
+
+            <div className="max-h-96 overflow-y-auto">
+              {activeTab === 'episodes' ? (
+                <div className="space-y-4">
+                  {mockEpisodes.map((episode) => (
+                    <div key={episode.id} className="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <img src={episode.thumbnail} alt={episode.title} className="w-16 h-20 object-cover rounded" />
+                      <div className="ml-4 flex-1">
+                        <div className="flex items-center">
+                          <h3 className="font-medium">{episode.title}</h3>
+                          {episode.isNew && (
+                            <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">NEW</span>
+                          )}
+                        </div>
+                        <p className="text-gray-500 text-sm">{episode.date}</p>
+                        <div className="flex items-center mt-1 space-x-4">
+                          <div className="flex items-center text-sm text-gray-500">
+                            <Heart className="w-4 h-4 mr-1" />
+                            {episode.likes}
+                          </div>
+                          <div className="flex items-center text-sm text-gray-500">
+                            <MessageCircle className="w-4 h-4 mr-1" />
+                            {episode.comments}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold mb-2">Description</h3>
+                    <p className="text-gray-600">{comic.description}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-2">Details</h3>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-500">Genre:</span>
+                        <span className="ml-2">{comic.genre}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Status:</span>
+                        <span className="ml-2">{comic.status}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Episodes:</span>
+                        <span className="ml-2">{comic.episodes}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Rating:</span>
+                        <span className="ml-2">{comic.rating}/10</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+// Episode Reader Component
+export const EpisodeReader = ({ comic, episodeId, onClose, onNext, onPrev }) => {
+  const [currentPage, setCurrentPage] = useState(0);
+  
+  // Mock episode images (using the same thumbnail for demo)
+  const episodeImages = Array.from({ length: 12 }, (_, i) => comic.thumbnail);
+
+  return (
+    <div className="fixed inset-0 bg-black z-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm p-4 flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <div>
+            <h1 className="font-semibold">{comic.title}</h1>
+            <p className="text-sm text-gray-500">Episode {episodeId}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <button className="p-2 hover:bg-gray-100 rounded-lg">
+              <Heart className="w-5 h-5" />
+            </button>
+            <button className="p-2 hover:bg-gray-100 rounded-lg">
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="text-sm text-gray-500">
+            {currentPage + 1} / {episodeImages.length}
+          </div>
+        </div>
+      </div>
+
+      {/* Reader Content */}
+      <div className="flex-1 overflow-y-auto bg-gray-900 p-8">
+        <div className="max-w-2xl mx-auto space-y-4">
+          {episodeImages.map((image, index) => (
+            <motion.img
+              key={index}
+              src={image}
+              alt={`Page ${index + 1}`}
+              className="w-full rounded-lg shadow-lg"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              onLoad={() => {
+                if (index === currentPage) {
+                  // Auto-scroll to current page
+                }
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="bg-white border-t p-4 flex items-center justify-between">
+        <button
+          onClick={onPrev}
+          className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Previous
+        </button>
+        
+        <div className="flex items-center space-x-4">
+          <button className="px-4 py-2 border rounded-lg hover:bg-gray-50">
+            Comments (245)
+          </button>
+          <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+            Like (1.2k)
+          </button>
+        </div>
+        
+        <button
+          onClick={onNext}
+          className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900"
+        >
+          Next
+          <ChevronRight className="w-4 h-4 ml-1" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Loading Component
+export const LoadingSpinner = () => (
+  <div className="flex items-center justify-center p-8">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+  </div>
+);
+
+// Footer Component
+export const Footer = () => (
+  <footer className="bg-gray-100 mt-16">
+    <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div className="bg-green-500 text-white px-3 py-1 rounded-lg font-bold text-xl inline-block mb-4">
+            WEBTOON
+          </div>
+          <p className="text-gray-600 text-sm">
+            Discover amazing stories and connect with creators from around the world.
+          </p>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold mb-4">Company</h3>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li><a href="#" className="hover:text-green-500">About</a></li>
+            <li><a href="#" className="hover:text-green-500">Careers</a></li>
+            <li><a href="#" className="hover:text-green-500">Press</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold mb-4">Support</h3>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li><a href="#" className="hover:text-green-500">Help Center</a></li>
+            <li><a href="#" className="hover:text-green-500">Contact</a></li>
+            <li><a href="#" className="hover:text-green-500">Terms</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 className="font-semibold mb-4">Connect</h3>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li><a href="#" className="hover:text-green-500">Facebook</a></li>
+            <li><a href="#" className="hover:text-green-500">Twitter</a></li>
+            <li><a href="#" className="hover:text-green-500">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div className="border-t mt-8 pt-8 text-center text-sm text-gray-500">
+        © 2024 Webtoon Clone. All rights reserved.
+      </div>
+    </div>
+  </footer>
+);
