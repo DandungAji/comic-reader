@@ -26,6 +26,14 @@ function App() {
   const [currentEpisode, setCurrentEpisode] = useState(1);
   const [filteredComics, setFilteredComics] = useState(mockComics);
   const [loading, setLoading] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
+
+  // Listen for analytics dashboard events
+  useEffect(() => {
+    const handleOpenAnalytics = () => setShowAnalytics(true);
+    window.addEventListener('openAnalytics', handleOpenAnalytics);
+    return () => window.removeEventListener('openAnalytics', handleOpenAnalytics);
+  }, []);
 
   // Filter comics based on search and genre
   useEffect(() => {
