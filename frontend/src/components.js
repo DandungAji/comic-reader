@@ -767,3 +767,438 @@ export const Footer = () => (
     </div>
   </footer>
 );
+
+// Analytics Components
+export const StatCard = ({ icon: Icon, title, value, subtitle, color = "text-gray-900" }) => (
+  <motion.div
+    whileHover={{ scale: 1.02 }}
+    className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow"
+  >
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-gray-500 text-sm font-medium">{title}</p>
+        <p className={`text-2xl font-bold ${color} mt-1`}>{value}</p>
+        {subtitle && <p className="text-gray-400 text-xs mt-1">{subtitle}</p>}
+      </div>
+      <div className="bg-green-100 p-3 rounded-lg">
+        <Icon className="w-6 h-6 text-green-600" />
+      </div>
+    </div>
+  </motion.div>
+);
+
+export const ChartCard = ({ title, children, className = "" }) => (
+  <div className={`bg-white p-6 rounded-xl shadow-sm border ${className}`}>
+    <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+    {children}
+  </div>
+);
+
+export const AchievementCard = ({ achievement }) => (
+  <motion.div
+    whileHover={{ scale: 1.02 }}
+    className={`p-4 rounded-xl flex items-center space-x-4 ${
+      achievement.unlocked 
+        ? 'bg-gradient-to-r from-green-50 to-blue-50 border border-green-200' 
+        : 'bg-gray-50 border border-gray-200'
+    }`}
+  >
+    <div className={`p-3 rounded-full ${
+      achievement.unlocked ? 'bg-green-500' : 'bg-gray-400'
+    }`}>
+      <Award className="w-6 h-6 text-white" />
+    </div>
+    <div className="flex-1">
+      <h4 className={`font-semibold ${
+        achievement.unlocked ? 'text-gray-900' : 'text-gray-500'
+      }`}>
+        {achievement.title}
+      </h4>
+      <p className="text-sm text-gray-600">{achievement.description}</p>
+      {achievement.unlocked && achievement.date && (
+        <p className="text-xs text-green-600 mt-1">
+          Unlocked {format(new Date(achievement.date), 'MMM dd, yyyy')}
+        </p>
+      )}
+      {!achievement.unlocked && achievement.progress !== undefined && (
+        <div className="mt-2">
+          <div className="bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-green-500 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${(achievement.progress / 100) * 100}%` }}
+            />
+          </div>
+          <p className="text-xs text-gray-500 mt-1">{achievement.progress}/100</p>
+        </div>
+      )}
+    </div>
+  </motion.div>
+);
+
+export const AnalyticsDashboard = ({ isOpen, onClose }) => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const { userStats, readingHistory, genreBreakdown, weeklyActivity, monthlyProgress, topComics, achievements } = mockAnalytics;
+
+  if (!isOpen) return null;
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: BarChart3 },
+    { id: 'reading', label: 'Reading Stats', icon: BookOpen },
+    { id: 'engagement', label: 'Engagement', icon: Heart },
+    { id: 'achievements', label: 'Achievements', icon: Award }
+  ];
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-gray-50 rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="bg-white border-b p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
+                <p className="text-gray-600">Track your reading journey and discover insights</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button className="flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Data
+                </button>
+                <button
+                  onClick={onClose}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="bg-white border-b px-6">
+            <nav className="flex space-x-8">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-green-500 text-green-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Content */}
+          <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)] custom-scrollbar">
+            {activeTab === 'overview' && (
+              <div className="space-y-6">
+                {/* Key Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <StatCard
+                    icon={BookOpen}
+                    title="Comics Read"
+                    value={userStats.totalComicsRead}
+                    subtitle="All time"
+                    color="text-blue-600"
+                  />
+                  <StatCard
+                    icon={Play}
+                    title="Episodes Read"
+                    value={userStats.totalEpisodesRead.toLocaleString()}
+                    subtitle="All time"
+                    color="text-green-600"
+                  />
+                  <StatCard
+                    icon={Clock}
+                    title="Reading Time"
+                    value={`${userStats.totalReadingTime}h`}
+                    subtitle="Total hours"
+                    color="text-purple-600"
+                  />
+                  <StatCard
+                    icon={Target}
+                    title="Reading Streak"
+                    value={`${userStats.readingStreak} days`}
+                    subtitle="Current streak"
+                    color="text-orange-600"
+                  />
+                </div>
+
+                {/* Charts Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Reading Activity */}
+                  <ChartCard title="Weekly Reading Activity">
+                    <ResponsiveContainer width="100%" height={300}>
+                      <AreaChart data={weeklyActivity}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="day" />
+                        <YAxis />
+                        <Tooltip />
+                        <Area type="monotone" dataKey="episodes" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+
+                  {/* Genre Breakdown */}
+                  <ChartCard title="Favorite Genres">
+                    <ResponsiveContainer width="100%" height={300}>
+                      <RechartsPieChart>
+                        <Pie
+                          data={genreBreakdown}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={80}
+                          dataKey="value"
+                          label={({ name, value }) => `${name}: ${value}%`}
+                        >
+                          {genreBreakdown.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </RechartsPieChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                </div>
+
+                {/* Monthly Progress */}
+                <ChartCard title="Monthly Reading Progress">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={monthlyProgress}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="comics" fill="#10b981" name="Comics" />
+                      <Bar dataKey="episodes" fill="#3b82f6" name="Episodes" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </div>
+            )}
+
+            {activeTab === 'reading' && (
+              <div className="space-y-6">
+                {/* Reading Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <StatCard
+                    icon={Star}
+                    title="Average Rating"
+                    value={userStats.averageRating}
+                    subtitle="Your ratings"
+                    color="text-yellow-600"
+                  />
+                  <StatCard
+                    icon={TrendingUp}
+                    title="Favorite Genre"
+                    value={userStats.favoriteGenre}
+                    subtitle="Most read"
+                    color="text-pink-600"
+                  />
+                  <StatCard
+                    icon={Calendar}
+                    title="Member Since"
+                    value={format(new Date(userStats.joinDate), 'MMM yyyy')}
+                    subtitle="Join date"
+                    color="text-indigo-600"
+                  />
+                </div>
+
+                {/* Top Comics */}
+                <ChartCard title="Your Top Comics">
+                  <div className="space-y-4">
+                    {topComics.map((comic, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <div className="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                            {index + 1}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900">{comic.title}</h4>
+                            <p className="text-sm text-gray-600">{comic.episodes} episodes • {comic.hours}h read</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${
+                                i < comic.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ChartCard>
+
+                {/* Reading History */}
+                <ChartCard title="7-Day Reading History">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <RechartsLineChart data={readingHistory}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="date" 
+                        tickFormatter={(date) => format(new Date(date), 'MMM dd')}
+                      />
+                      <YAxis />
+                      <Tooltip 
+                        labelFormatter={(date) => format(new Date(date), 'MMM dd, yyyy')}
+                      />
+                      <Legend />
+                      <Line type="monotone" dataKey="episodes" stroke="#10b981" strokeWidth={2} name="Episodes" />
+                      <Line type="monotone" dataKey="minutes" stroke="#3b82f6" strokeWidth={2} name="Minutes" />
+                    </RechartsLineChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+              </div>
+            )}
+
+            {activeTab === 'engagement' && (
+              <div className="space-y-6">
+                {/* Engagement Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <StatCard
+                    icon={Heart}
+                    title="Total Likes"
+                    value={userStats.totalLikes.toLocaleString()}
+                    subtitle="Given to comics"
+                    color="text-red-600"
+                  />
+                  <StatCard
+                    icon={MessageCircle}
+                    title="Comments"
+                    value={userStats.totalComments}
+                    subtitle="Posted"
+                    color="text-blue-600"
+                  />
+                  <StatCard
+                    icon={Users}
+                    title="Following"
+                    value="47"
+                    subtitle="Creators"
+                    color="text-green-600"
+                  />
+                </div>
+
+                {/* Weekly Engagement */}
+                <ChartCard title="Weekly Engagement Activity">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={weeklyActivity}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="likes" fill="#ef4444" name="Likes Given" />
+                      <Bar dataKey="comments" fill="#3b82f6" name="Comments Posted" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartCard>
+
+                {/* Engagement Timeline */}
+                <ChartCard title="Engagement Over Time">
+                  <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                      <div>
+                        <div className="text-2xl font-bold text-blue-600">12.4k</div>
+                        <div className="text-sm text-gray-600">Likes Received</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-green-600">3.2k</div>
+                        <div className="text-sm text-gray-600">Comments on Your Reviews</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-purple-600">89</div>
+                        <div className="text-sm text-gray-600">Comics Bookmarked</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-orange-600">156</div>
+                        <div className="text-sm text-gray-600">Reviews Written</div>
+                      </div>
+                    </div>
+                  </div>
+                </ChartCard>
+              </div>
+            )}
+
+            {activeTab === 'achievements' && (
+              <div className="space-y-6">
+                {/* Achievement Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <StatCard
+                    icon={Award}
+                    title="Achievements"
+                    value={`${achievements.filter(a => a.unlocked).length}/${achievements.length}`}
+                    subtitle="Unlocked"
+                    color="text-yellow-600"
+                  />
+                  <StatCard
+                    icon={Activity}
+                    title="Progress"
+                    value={`${Math.round((achievements.filter(a => a.unlocked).length / achievements.length) * 100)}%`}
+                    subtitle="Completion"
+                    color="text-green-600"
+                  />
+                  <StatCard
+                    icon={Target}
+                    title="Next Goal"
+                    value="Community Member"
+                    subtitle="89/100 comments"
+                    color="text-blue-600"
+                  />
+                </div>
+
+                {/* Achievement List */}
+                <ChartCard title="Your Achievements">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {achievements.map((achievement) => (
+                      <AchievementCard key={achievement.id} achievement={achievement} />
+                    ))}
+                  </div>
+                </ChartCard>
+
+                {/* Achievement Progress */}
+                <ChartCard title="Achievement Progress Overview">
+                  <div className="space-y-4">
+                    <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white p-6 rounded-xl">
+                      <h3 className="text-xl font-semibold mb-2">Reading Champion</h3>
+                      <p className="opacity-90 mb-4">You're doing amazing! Keep up the great reading habits.</p>
+                      <div className="bg-white bg-opacity-20 rounded-full h-3">
+                        <div 
+                          className="bg-white h-3 rounded-full transition-all duration-500"
+                          style={{ width: '67%' }}
+                        />
+                      </div>
+                      <p className="text-sm opacity-75 mt-2">67% towards Reading Master badge</p>
+                    </div>
+                  </div>
+                </ChartCard>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
