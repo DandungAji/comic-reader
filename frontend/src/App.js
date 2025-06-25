@@ -11,6 +11,7 @@ import {
   EpisodeReader,
   LoadingSpinner,
   Footer,
+  AnalyticsDashboard,
   mockComics,
   genres,
   dailyDays
